@@ -252,9 +252,10 @@ format.
 
 ``` json
 {
+    "kty": "RSA",
     "alg": "$key_algorithm",
-    "k-mod": "$pubkey modulus",
-    "k-exp": "$pubkey exponent"
+    "n": "$pubkey_modulus",
+    "e": "$pubkey_exponent"
 }
 ```
 
@@ -288,7 +289,7 @@ The authentication service is provided by the KBS through two endpoints:
 2. `/kbs/v0/attest` only accepts `POST` requests whose body is a [KBS Attestation](#attestation)
    JSON payload and the header contains a `Cookie` set to the value received in
    step 1.i. This is how the attester replies to attestation challenge received
-   in step 1.ii. If the attestation was successful, the KBS replies to that request with an 
+   in step 1.ii. If the attestation was successful, the KBS replies to that request with an
    [Attestation Results Token](#attestation-results-token).
 
 ```
@@ -393,7 +394,7 @@ KBS uses the following path format to locate secret resources:
 
 Where the URL path parameters are:
 
-- `<repository>`: This is similar to the concept of container image repository (`docker.io/{repository}/{image_name}:{tag}`), 
+- `<repository>`: This is similar to the concept of container image repository (`docker.io/{repository}/{image_name}:{tag}`),
 which is used to facilitate users to manage different resource groups.
 Its name should be completely set by users.
 This parameter can be empty to use the default repository of KBS.
@@ -413,7 +414,7 @@ A POST request with the content of resource to `/kbs/v0/resource/<repository>/<t
 ### Attestation Results Token
 
 Authenticated attesters can also receive an attestation token from the KBS in the response body of `/kbs/v0/attest`.
-Attesters can use the attestation result token to request additional resources from external services, a.k.a. relying parties. 
+Attesters can use the attestation result token to request additional resources from external services, a.k.a. relying parties.
 
 The provided attestation results token follows the [JSON web token](https://jwt.io/) standard and format.
 
@@ -427,8 +428,8 @@ token signature algorithm (`alg`). For example:
 
 ```json
 {
-    "typ": "JWT"
-    "alg": "RS256",
+    "typ": "JWT",
+    "alg": "RS256"
 }
 
 ```
@@ -457,7 +458,7 @@ respectively declare the expiration time, issuing time and issuer (KBS URL
 address) of the token:
 
 | Field | Description     | Type                    | Example              |
-|-      |-                |-                        |-                     |
+| ----- | --------------- | ----------------------- | -------------------- |
 | `exp` | Expiration time | Seconds since the epoch | `99991231235959`     |
 | `iat` | Issuing time    | Seconds since the epoch | `180322235959`       |
 | `iss` | Issuer          | KBS URL                 | `https://my-kbs.io/` |
@@ -493,7 +494,7 @@ The payload of the POST request should like:
 Where `type` is the policy format (e.g. `rego` or `opa`), `policy_id` provides the policy ID
 and `policy` is the base64 encoded policy content.
 Only authenticated users can send a POST request to this endpoint.
-KBS verifies the user identity with the user's private key signed JSON Web Token (JWT) that must be included in the request. 
+KBS verifies the user identity with the user's private key signed JSON Web Token (JWT) that must be included in the request.
 
 ##### Signature
 
@@ -573,4 +574,3 @@ The following individuals were instrumental in the development of this protocol:
 * Sergio Lopez (@slp)
 * Thomas Fossati (@thomas-fossati)
 * Tobin Feldman-Fitzthum (@fitzthum)
-
